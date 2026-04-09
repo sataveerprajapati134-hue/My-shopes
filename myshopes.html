@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My Shopes - Premium Buy & Sell Marketplace for All Products">
+    <title>My Shopes • Premium Buy & Sell Shopping</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+        
+        :root {
+            --tw-color-primary: #00d4aa;
+        }
+        
+        * {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        
+        .tailwind-ready * {
+            transition-property: none;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+        
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px -12px rgb(0 212 170 / 0.15);
+        }
+        
+        .navbar {
+            backdrop-filter: blur(12px);
+        }
+        
+        .modal {
+            animation: modalPop 0.3s ease forwards;
+        }
+        
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .cart-slide {
+            animation: cartSlide 0.3s ease forwards;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white font-sans tailwind-ready">
+    <!-- NAVBAR -->
+    <nav class="navbar bg-zinc-950/80 border-b border-white/10 sticky top-0 z-50">
+        <div class="max-w-screen-2xl mx-auto">
+            <div class="px-8 py-5 flex items-center justify-between">
+                
+                <!-- Logo -->
+                <div class="flex items-center gap-x-3">
+                    <div class="w-10 h-10 bg-[#00d4aa] rounded-2xl flex items-center justify-center shadow-inner">
+                        <i class="fa-solid fa-bag-shopping text-3xl text-white"></i>
+                    </div>
+                    <div>
+                        <span class="font-bold text-3xl tracking-[-1px]" style="font-family: 'Playfair Display', sans-serif;">My Shopes</span>
+                    </div>
+                    <span class="text-xs font-medium bg-white/10 text-white px-2.5 py-px rounded-3xl">PREMIUM</span>
+                </div>
+
+                <!-- Menu -->
+                <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                    <a onclick="navigateToSection('home')" class="hover:text-[#00d4aa] flex items-center gap-x-1">
+                        <i class="fa-solid fa-house"></i>
+                        <span>Home</span>
+                    </a>
+                    <a onclick="navigateToSection('shop')" class="hover:text-[#00d4aa]">Shop All</a>
+                    <a onclick="navigateToSection('sell')" class="hover:text-[#00d4aa]">Sell Now</a>
+                    <a onclick="navigateToSection('categories')" class="hover:text-[#00d4aa]">Categories</a>
+                    <a href="#" class="hover:text-[#00d4aa]">Deals</a>
+                    <a href="#" class="hover:text-[#00d4aa]">Blog</a>
+                </div>
+
+                <!-- Search -->
+                <div onclick="focusSearch()" class="flex-1 max-w-xl mx-8 hidden md:flex items-center bg-white/10 hover:bg-white/15 rounded-3xl px-5 py-3 text-sm border border-white/10">
+                    <i class="fa-solid fa-magnifying-glass text-zinc-400 mr-3"></i>
+                    <input 
+                        id="search-input"
+                        type="text" 
+                        placeholder="Search millions of products... Electronics, Fashion, Home & more"
+                        class="flex-1 bg-transparent outline-none placeholder-zinc-400 text-sm">
+                    <button onclick="performSearch(event)" 
+                            class="bg-[#00d4aa] hover:bg-[#00b894] text-zinc-950 text-xs font-semibold px-6 py-2 rounded-3xl flex items-center gap-x-1">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Right side -->
+                <div class="flex items-center gap-x-6">
+                    <!-- Sell Button -->
+                    <button onclick="showSellModal()"
+                            class="hidden sm:flex items-center gap-x-2 bg-white text-zinc-950 font-semibold text-sm px-6 py-3 rounded-3xl hover:shadow-xl hover:shadow-[#00d4aa]/20">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>SELL NOW</span>
+                    </button>
+
+                    <!-- Wishlist -->
+                    <button onclick="toggleWishlist()" class="relative text-xl hover:text-[#00d4aa]">
+                        <i class="fa-solid fa-heart"></i>
+                        <span id="wishlist-count" class="absolute -top-1 -right-1 text-[10px] bg-rose-500 text-white w-4 h-4 flex items-center justify-center rounded-full">3</span>
+                    </button>
+
+                    <!-- Cart -->
+                    <button onclick="toggleCart()" class="relative text-xl hover:text-[#00d4aa]">
+                        <i class="fa-solid fa-shopping-cart"></i>
+                        <span id="cart-count-badge" class="absolute -top-1 -right-1 bg-[#00d4aa] text-zinc-950 text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+                    </button>
+
+                    <!-- Account -->
+                    <div onclick="showAccountModal()" class="flex items-center gap-x-2 cursor-pointer">
+                        <div class="w-8 h-8 bg-zinc-800 rounded-2xl flex items-center justify-center text-sm font-semibold ring-2 ring-[#00d4aa]/30">SV</div>
+                        <div class="hidden sm:block">
+                            <p class="text-sm font-medium">Sataveer</p>
+                            <p class="text-[10px] text-zinc-400 -mt-0.5">Premium Member</p>
+                        </div>
+                    </div>
+
+                    <!-- Mobile menu -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-2xl">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden px-8 py-6 border-t border-white/10 bg-zinc-900">
+                <div class="flex flex-col gap-y-6 text-lg">
+                    <a onclick="navigateToSection('home');toggleMobileMenu()" class="flex items-center gap-x-3"><i class="fa-solid fa-house w-5"></i>Home</a>
+                    <a onclick="navigateToSection('shop');toggleMobileMenu()" class="flex items-center gap-x-3"><i class="fa-solid fa-store w-5"></i>Shop All</a>
+                    <a onclick="navigateToSection('sell');toggleMobileMenu()" class="flex items-center gap-x-3"><i class="fa-solid fa-plus w-5"></i>Sell Now</a>
+                    <a onclick="navigateToSection('categories');toggleMobileMenu()" class="flex items-center gap-x-3"><i class="fa-solid fa-list w-5"></i>Categories</a>
+                    <div class="pt-6 border-t border-white/10">
+                        <button onclick="showSellModal();toggleMobileMenu()" 
+                                class="w-full bg-[#00d4aa] text-zinc-950 font-semibold py-4 rounded-3xl flex items-center justify-center gap-x-2">
+                            <i class="fa-solid fa-plus"></i> START SELLING TODAY
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero-bg pt-16 pb-20">
+        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center bg-white/10 text-white text-sm font-medium px-6 py-3 rounded-3xl">
+                    <span class="relative flex h-3 w-3 mr-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00d4aa] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-[#00d4aa]"></span>
+                    </span>
+                    LIVE • 1,284,672 products listed today
+                </div>
+                
+                <h1 class="text-6xl md:text-7xl font-bold leading-none tracking-[-2px]" style="font-family: 'Playfair Display', sans-serif;">
+                    The Premium<br>Marketplace for<br>Buying &amp; Selling
+                </h1>
+                
+                <p class="text-xl text-zinc-400 max-w-md">
+                    Discover millions of premium products. Sell your items instantly to buyers across India and beyond.
+                </p>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="navigateToSection('shop')" 
+                            class="flex-1 md:flex-none bg-[#00d4aa] hover:bg-[#00b894] text-zinc-950 font-semibold text-lg px-10 py-6 rounded-3xl flex items-center justify-center gap-x-3 shadow-2xl shadow-[#00d4aa]/30">
+                        <i class="fa-solid fa-shopping-bag"></i>
+                        SHOP NOW
+                    </button>
+                    
+                    <button onclick="showSellModal()" 
+                            class="flex-1 md:flex-none border border-white/30 hover:border-[#00d4aa] font-semibold text-lg px-10 py-6 rounded-3xl flex items-center justify-center gap-x-3">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                        SELL YOUR PRODUCTS
+                    </button>
+                </div>
+                
+                <div class="flex items-center gap-x-8 text-sm">
+                    <div class="flex items-center">
+                        <div class="flex -space-x-4">
+                            <div class="w-6 h-6 bg-emerald-400 rounded-2xl flex items-center justify-center text-xs ring-2 ring-zinc-950">⭐</div>
+                            <div class="w-6 h-6 bg-amber-400 rounded-2xl flex items-center justify-center text-xs ring-2 ring-zinc-950">🔥</div>
+                        </div>
+                        <p class="ml-4">4.98 average rating</p>
+                    </div>
+                    <div class="h-4 w-px bg-white/20"></div>
+                    <p class="flex items-center gap-x-1"><i class="fa-solid fa-truck text-[#00d4aa]"></i> Free shipping on orders over ₹999</p>
+                    <div class="h-4 w-px bg-white/20"></div>
+                    <p class="flex items-center gap-x-1"><i class="fa-solid fa-shield-halved text-[#00d4aa]"></i> Buyer Protection</p>
+                </div>
+            </div>
+            
+            <!-- Hero visual -->
+            <div class="relative">
+                <div class="aspect-square md:aspect-auto bg-gradient-to-br from-[#00d4aa]/10 to-transparent rounded-[3rem] p-6 border border-white/10">
+                    <div class="bg-zinc-900 rounded-3xl overflow-hidden h-full flex items-center justify-center relative">
+                        <div class="text-center">
+                            <div class="inline-flex bg-white/10 text-[#00d4aa] text-xs font-mono px-4 py-2 rounded-3xl mb-8">LIVE MARKETPLACE</div>
+                            <h2 class="text-4xl font-semibold mb-2">₹12,47,890</h2>
+                            <p class="text-zinc-400">sold in the last hour</p>
+                            
+                            <!-- Floating product cards -->
+                            <div class="absolute -top-6 -left-6 bg-zinc-800 rounded-2xl shadow-2xl p-4 w-40 rotate-[-8deg]">
+                                <img src="https://picsum.photos/id/1015/300/300" alt="Product" class="w-full h-28 object-cover rounded-xl mb-3">
+                                <p class="font-medium text-sm">iPhone 16 Pro • ₹1,09,999</p>
+                                <p class="text-[#00d4aa] text-xs">Sold by Rahul • Just now</p>
+                            </div>
+                            
+                            <div class="absolute -bottom-6 right-8 bg-zinc-800 rounded-2xl shadow-2xl p-4 w-40 rotate-[8deg]">
+                                <img src="https://picsum.photos/id/201/300/300" alt="Product" class="w-full h-28 object-cover rounded-xl mb-3">
+                                <p class="font-medium text-sm">Nike Air Jordan • ₹8,499</p>
+                                <p class="text-[#00d4aa] text-xs">Sold by Priya • 2 mins ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST BAR -->
+    <div class="bg-white/5 py-6 border-b border-white/10">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="flex flex-wrap justify-center md:justify-between items-center gap-x-8 gap-y-4 text-sm text-zinc-400">
+                <div class="flex items-center gap-x-2"><i class="fa-solid fa-truck-fast text-[#00d4aa]"></i> Instant Delivery in 142 cities</div>
+                <div class="flex items-center gap-x-2"><i class="fa-solid fa-credit-card text-[#00d4aa]"></i> 100% Secure Payments</div>
+                <div class="flex items-center gap-x-2"><i class="fa-solid fa-rotate-left text-[#00d4aa]"></i> Easy 30-day Returns</div>
+                <div class="flex items-center gap-x-2"><i class="fa-solid fa-medal text-[#00d4aa]"></i> Verified Premium Sellers</div>
+                <div class="flex items-center gap-x-2"><i class="fa-solid fa-headset text-[#00d4aa]"></i> 24×7 Customer Support</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <section id="categories" class="max-w-screen-2xl mx-auto px-8 py-16">
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <span class="uppercase text-xs tracking-[1px] text-[#00d4aa] font-medium">EXPLORE ALL PRODUCTS</span>
+                <h2 class="text-4xl font-semibold">Popular Categories</h2>
+            </div>
+            <a onclick="navigateToSection('shop')" class="text-[#00d4aa] flex items-center gap-x-2 text-sm font-medium">
+                BROWSE ALL <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+        
+        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+            <!-- Category cards -->
+            <div onclick="filterByCategory('electronics')" class="group bg-white/5 hover:bg-white/10 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:scale-110">📱</div>
+                <p class="font-semibold">Electronics</p>
+                <p class="text-xs text-zinc-400">1.2M products</p>
+            </div>
+            <div onclick="filterByCategory('fashion')" class="group bg-white/5 hover:bg-white/10 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-400 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:scale-110">👗</div>
+                <p class="font-semibold">Fashion &amp; Apparel</p>
+                <p class="text-xs text-zinc-400">892K products</p>
+            </div>
+            <div onclick="filterByCategory('home')" class="group bg-white/5 hover:bg-white/10 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-400 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:scale-110">🛋️</div>
+                <p class="font-semibold">Home &amp; Kitchen</p>
+                <p class="text-xs text-zinc-400">654K products</p>
+            </div>
+            <div onclick="filterByCategory('beauty')" class="group bg-white/5 hover:bg-white/10 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-400 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:scale-110">💄</div>
+                <p class="font-semibold">Beauty &amp; Personal Care</p>
+                <p class="text-xs text-zinc-400">421K products</p>
+            </div>
+            <div onclick="filterByCategory('sports')" class="group bg-white/5 hover:bg-white/10 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-400 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:scale-110">⚽</div>
+                <p class="font-semibold">Sports &amp; Outdoors</p>
+                <p class="text-xs text-zinc-400">312K products</p>
+            </div>
+            <div onclick="filterByCategory('books')" class="group bg-white/5 hover:bg-white/10 rounded-3xl p-6 flex flex-col items-center justify-center text-center cursor-pointer">
+                <div class="w-16 h-16 bg-gradient-to-br from-red-500 to-rose-400 rounded-2xl flex items-center justify-center text-4xl mb-4 group-hover:scale-110">📚</div>
+                <p class="font-semibold">Books &amp; Stationery</p>
+                <p class="text-xs text-zinc-400">198K products</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS / SHOP SECTION -->
+    <section id="shop" class="max-w-screen-2xl mx-auto px-8 py-16 bg-white/5">
+        <div class="flex justify-between items-baseline mb-8">
+            <h2 class="text-4xl font-semibold">Featured Products • All Categories</h2>
+            <div class="flex items-center text-sm gap-x-2 text-zinc-400">
+                <span id="results-count">248 products</span>
+                <select id="sort-select" onchange="sortProducts()" class="bg-transparent border border-white/20 rounded-2xl py-1 px-4 text-white">
+                    <option value="popular">Most Popular</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="newest">Newest First</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="products-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+            <!-- Populated by JavaScript -->
+        </div>
+        
+        <div class="text-center mt-12">
+            <button onclick="loadMoreProducts()" 
+                    class="border border-white/30 hover:border-[#00d4aa] text-[#00d4aa] font-medium px-8 py-4 rounded-3xl flex items-center gap-x-3 mx-auto">
+                <span>SHOW MORE PRODUCTS</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- SELL SECTION -->
+    <section id="sell" class="max-w-screen-2xl mx-auto px-8 py-20 bg-gradient-to-br from-zinc-900 to-black">
+        <div class="grid md:grid-cols-12 gap-16 items-center">
+            <div class="md:col-span-7">
+                <span class="px-6 py-2 rounded-3xl bg-white/10 text-[#00d4aa] text-sm font-medium">BECOME A SELLER IN 60 SECONDS</span>
+                <h2 class="text-5xl font-semibold leading-none mt-4 mb-6">Turn your products 
